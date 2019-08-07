@@ -15,5 +15,9 @@ public class TestAssert {
         int a = 0;
         assert true;
     }
+    @Test
+    public void test2(){
+
+    }
 
 }
