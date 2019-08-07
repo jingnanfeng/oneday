@@ -16,14 +16,6 @@ public class  A {
         System.out.println(i++);
         System.out.println(i++);
         System.out.println(i++);
-        System.out.println(i++);
-        System.out.println(i++);
-        System.out.println(i++);
-        System.out.println(i++);
-        System.out.println(i++);
-        System.out.println(i++);
-        System.out.println(i++);
-        System.out.println(i++);
-        System.out.println(i++);
+
     }
 }
