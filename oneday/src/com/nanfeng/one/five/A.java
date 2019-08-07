@@ -6,17 +6,24 @@ package com.nanfeng.one.five;
  * @Description
  * @date 2019-08-05 17:42
  */
-public abstract class  A {
+public class  A {
 
-
-    abstract void  test1();
-
-    void B(){
-        this.test1();
-    }
 
     public static void main(String[] args) {
-
+        int i = 0;
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
+        System.out.println(i++);
     }
-
 }

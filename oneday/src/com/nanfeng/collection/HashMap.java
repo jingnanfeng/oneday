@@ -608,9 +608,56 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 r = p;
             }
         }
-        static <K,V> void moveRootToFront(Node<K,V>[] tab,TreeNode<K,V> root){
 
+        /**
+         * 确保给出的根节点是箱中的第一个节点 也就是直接位于table上的
+         * 原本的第一个节点若不是root节点则将root从连败哦中剪下放到第一个节点的前方
+         * @param tab
+         * @param root
+         * @param <K>
+         * @param <V>
+         */
+        static <K,V> void moveRootToFront(Node<K,V>[] tab,TreeNode<K,V> root){
+            int n;
+            if (root != null && tab !=null && (n = tab.length) > 0){
+                //根据root的hash值快速定位下标
+                int index = (n - 1) & root.hash;
+                //取出table[index]中的第一个节点
+                TreeNode<K,V> frist = (TreeNode<K,V>)tab[index];
+                //如果root不是第一个节点
+                if (root != frist){
+                    Node<K,V> rn;
+                    //将root放到table[index]的位置上
+                    tab[index] = root;
+                    //rp == root 的前一个节点
+                    TreeNode<K,V> rp = root.prev;
+                    //rn == root 的后一个节点
+                    if ((rn = root.next) != null){
+                        //rn的前指针指向root的前一个节点
+                        ((TreeNode<K,V>)rn).prev = rp;
+                    }
+                    if (rp != null){
+                        //rp的后指针指向root的后一个节点
+                        frist.next = rn;
+                    }
+                    if (frist != null){
+                        //将原本的frist放到root后面
+                        frist.prev = root;
+                    }
+                    root.next = frist;
+                    root.prev = null;
+                }
+                assert checkInvariants(root);
+            }
         }
+
+        /**
+         * 从root开始递归查询红黑树的性质，仅在检查root是否落在table上调用
+         */
+        static <K,V> boolean checkInvariants(TreeNode<K,V> t){
+            return false;
+        }
+
         /**
          * 当存在hash碰撞的时候，且元素数量大于8的时候，就会以红黑树的方式将这些元素
          * 组织起来
@@ -683,8 +730,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                     if (xpn != null){
                         ((TreeNode<K,V>) xpn).prev = x;
                         //插入树节点平衡
-                        //把root节点移动到连败哦的第一个节点
-                        MoveRootToFront(tab,balanceInsertion(root,x));
+                        //把root节点移动到第一个节点
+                        moveRootToFront(tab,balanceInsertion(root,x));
                         return null;
                     }
                 }
@@ -705,10 +752,6 @@ public class HashMap<K,V> extends AbstractMap<K,V>
 
         static int tieBreakOrder(Object a, Object b){
             return 0;
-        }
-
-        static <K,V> void  MoveRootToFront(Node<K,V>[] tab,TreeNode<K,V> root){
-
         }
 
         static <K,V> TreeNode<K,V> balanceInsertion(TreeNode<K,V> root,
