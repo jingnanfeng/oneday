@@ -655,6 +655,22 @@ public class HashMap<K,V> extends AbstractMap<K,V>
          * 从root开始递归查询红黑树的性质，仅在检查root是否落在table上调用
          */
         static <K,V> boolean checkInvariants(TreeNode<K,V> t){
+            TreeNode<K,V> tp = t.parent,tl = t.left,tr = t.right,
+                    tb = t.prev,tn = (TreeNode<K,V>)t.next;
+            if (tb != null && tb.next != t){
+                //t的前一个节点的后续节点应为t
+                return false;
+            }
+            if (tn != null && tn.prev != t){
+                //t的后一个节点的前置节点应为t
+                return false;
+            }
+            if (tp != null && t != tp.left && t != tp.right){
+                //t 应为tp的左子节点或者右子节点
+                return false;
+            }
+            if (tl != null && (tl.parent != null || tr.hash < t.hash));
+
             return false;
         }
 
