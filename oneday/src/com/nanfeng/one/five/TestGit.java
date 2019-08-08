@@ -1,0 +1,19 @@
+package com.nanfeng.one.five;
+
+import org.junit.jupiter.api.Test;
+
+/**
+ * @author liutao
+ * @Title
+ * @Description
+ * @date 2019-08-08 11:10
+ */
+public class TestGit {
+
+    @Test
+    public void test(){
+        System.out.println("测试git冲突");
+        System.out.println("git主干提交");
+    }
+
+}
