@@ -14,6 +14,7 @@ public class TestGit {
     public void test(){
         System.out.println("测试git冲突");
         System.out.println("git主干提交");
+        System.out.println("git分支提交");
     }
 
 }
