@@ -22,9 +22,9 @@ public class FileSize {
         DecimalFormat df = new DecimalFormat("0.00");
         String resultSize = "";
         //如果大于1GB
-        if (size /GB >= 1){
+        if (size / GB >= 1){
             resultSize = df.format(size / (float)GB)+"GB";
-        }else if (size / GB >= 1){
+        }else if (size / MB >= 1){
             resultSize = df.format(size / (float)MB) + "MB";
         }else if (size / KB >= 1){
             resultSize = df.format(size / (float)KB) + "KB";
@@ -35,7 +35,7 @@ public class FileSize {
     }
 
     public static void main(String[] args) {
-        String str = fileSize(8077);
+        String str = fileSize(80000077);
         System.out.println(str);
     }
 }

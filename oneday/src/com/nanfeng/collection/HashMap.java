@@ -433,10 +433,11 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 threshold = Integer.MAX_VALUE;
                 return oldTab;
             }else if ((newCap = oldCap << 1) <MAXIMUM_CAPACITY &&
-                    oldCap >= DEFAULT_INITIAL_CAPACITY)
+                    oldCap >= DEFAULT_INITIAL_CAPACITY){
                 //如果旧的容量的两倍小于最大容量并且旧容量大于默认初始化容量（16）
                 //则容量扩大为两倍，扩容门槛也扩大为两倍
                 newThr = oldThr << 1;
+            }
         }else if (oldThr > 0){
             //使用非默认构造器创建map,第一次插入插入元素会走这里
             //如果旧容器为0且旧的扩容门槛大于0，则把新容器赋值为旧门槛
@@ -658,21 +659,40 @@ public class HashMap<K,V> extends AbstractMap<K,V>
             TreeNode<K,V> tp = t.parent,tl = t.left,tr = t.right,
                     tb = t.prev,tn = (TreeNode<K,V>)t.next;
             if (tb != null && tb.next != t){
-                //t的前一个节点的后续节点应为t
+                //t的前一个节点是后续节点应该为t
                 return false;
             }
             if (tn != null && tn.prev != t){
-                //t的后一个节点的前置节点应为t
+                //t的后一个节点的前驱应为t
                 return false;
             }
-            if (tp != null && t != tp.left && t != tp.right){
-                //t 应为tp的左子节点或者右子节点
+            if (tp != null && t != tp.right && t != tp.left){
+                //t应为t的父亲的左儿子或者右儿子
                 return false;
             }
-            if (tl != null && (tl.parent != null || tr.hash < t.hash));
-
-            return false;
+            if (tl != null && (tl.parent != t || tl.hash > t.hash)){
+                //t的右左儿子的hash值小于t,父亲应为t
+                return false;
+            }
+            if (tr != null && (tr.parent != t || tr.hash < t.hash)){
+                //t的右儿子的hash值应该大于t,父亲应为t
+                return false;
+            }
+            if (t.red && tl != null && tl.red && tr != null && tr.red){
+                //t和t的儿子不能同时为红色
+                return false;
+            }
+            if (tl != null && !checkInvariants(tl)){
+                //递归检查t的左儿子
+                return false;
+            }
+            if (tr != null && !checkInvariants(tr)){
+                //递归检查t的右儿子
+                return false;
+            }
+            return true;
         }
+
 
         /**
          * 当存在hash碰撞的时候，且元素数量大于8的时候，就会以红黑树的方式将这些元素
@@ -753,14 +773,65 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 }
 
             }
-            //return null;
         }
+
+        /**
+         * 从根节点寻找h和k符合的节点
+         * @param h
+         * @param k
+         * @return
+         */
+        final TreeNode<K,V> getTreeNode(int h,Object k){
+            return ((parent != null) ? root() : this).find(h, k,null);
+        }
+
+        /**
+         * 从根节点p开始根据hash和key值寻找指定的节点。kc是key的class
+         * @param h
+         * @param k
+         * @param kc
+         * @return
+         */
+        final TreeNode<K,V> find(int h,Object k, Class<?> kc){
+            //调用该方法时this是根节点
+            TreeNode<K,V> p = this;
+            do {
+                int ph, dir;
+                K pk;
+                TreeNode<K, V> pl = p.left, pr = p.right, q;
+                if ((ph = p.hash) > h) {
+                    //h < p.hash,移向左子树
+                    p = pl;
+                } else if (ph < h) {
+                    //h > p.hash 移向右子树
+                    p = pr;
+                } else if ((pk = p.key) == k || (k != null && k.equals(pk))) {
+                    //p.key = k
+                    return p;
+                } else if (pl == null) {
+                    //如hash相等但key不等，向左右子树非空的一侧移动
+                    p = pr;
+                } else if (pr == null) {
+                    p = pl;
+                } else if ((kc != null ||
+                        //kc是否是一个可比较的类
+                        (kc = comparableClassFor(k)) != null) &&
+                        //比较k和p.key
+                        (dir = compareComparables(kc, k, pk)) != 0) {
+                    //k < p.key 向左移动否则向有移动
+                    p = (dir < 0) ? pl : pr;
+                } else if ((q = pr.find(h, k, kc)) != null) {
+                    //从这里开始的条件仅当输入k == null 的时候才会进入，先检查右子树在检查左子树
+                    return q;
+                } else {
+                    p = pl;
+                }
+            }while (p != null);
+                return null;
+        }
+
         final void split(HashMap<K, V> map, Node<K,V>[] tab,int index, int bit){
 
-        }
-
-        final TreeNode<K,V> find(int h,Object k, Class<?> kc){
-            return null;
         }
 
         final void treeify(Node<K,V>[] tab){
