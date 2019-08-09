@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
  * @author liutao
  * @Title
  * @Description
- * @date 2019-08-08 11:10
+ * @date 2019-08-08 11:11
  */
 public class TestGit {
 
@@ -20,5 +20,4 @@ public class TestGit {
     public void test1(){
         System.out.println("git主干提交");
     }
-
 }
