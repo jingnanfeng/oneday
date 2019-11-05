@@ -7,6 +7,11 @@ package com.nanfeng.annotation;
  * @date 2019-07-23 21:31
  */
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * JDK 提供的常用注解
  *  @Override：限定重写父类方法
@@ -21,9 +26,17 @@ package com.nanfeng.annotation;
  * @Inherited 被它修饰的Annotation具有继承性，（其子类也具有该注解）
  */
 public class TestAnnotation {
+    @MyAnnotation (value = "aa")
+    String a;
+
+    public static void main(String[] args) {
+        TestAnnotation annotation = new TestAnnotation();
+        System.out.println(annotation.a);
+    }
 
 }
-
- @interface MyAnnotation{
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@interface MyAnnotation{
     String value() default "hello";
 }
