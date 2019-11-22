@@ -9,7 +9,7 @@ import test.one.extrnds.equals.Employee;
  */
 public class TestPair {
     public static void main(String[] args) {
-        Manager ceo = new Manager("A",80000,2003,5,12);
+        Manager ceo = new Manager("Person",80000,2003,5,12);
         Manager cfo = new Manager("B",60000,2003,6,15);
         Pair<Manager> buddires = new Pair<>(ceo,cfo);
         printBuddies(buddires);

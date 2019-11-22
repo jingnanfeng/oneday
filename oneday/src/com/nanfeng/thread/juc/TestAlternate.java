@@ -22,7 +22,7 @@ public class TestAlternate {
 
                 }
             }
-        },"A").start();
+        },"Person").start();
 
         new Thread(new Runnable() {
             @Override

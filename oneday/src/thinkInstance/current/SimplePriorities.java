@@ -5,28 +5,22 @@ import java.util.concurrent.Executors;
 
 /**
  * @author liutao
- * @Title
+ * @Title 线程优先级
  * @Description
- * @date 2019-09-05 8:48
+ * @date 2019-11-21 15:06
  */
-public class SimplePriorities implements Runnable{
+public class SimplePriorities implements Runnable {
 
     private int countDown = 5;
     private volatile double d;
     private int priority;
-    private String name;
 
-    public SimplePriorities(int priority,String name){
+    public SimplePriorities(int priority){
         this.priority = priority;
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String toString(){
-        return Thread.currentThread().getName()+":" +countDown;
+        return Thread.currentThread() + " : " + countDown;
     }
 
     @Override
@@ -34,7 +28,7 @@ public class SimplePriorities implements Runnable{
         Thread.currentThread().setPriority(priority);
         while (true){
             for (int i = 0; i < 10000; i++) {
-                d += (Math.PI + Math.E) /(double)i;
+                d += (Math.PI +Math.E) / (double)i;
                 if (i % 1000 == 0){
                     Thread.yield();
                 }
@@ -47,11 +41,12 @@ public class SimplePriorities implements Runnable{
     }
 
     public static void main(String[] args) {
-        ExecutorService exec = Executors.newCachedThreadPool();
+        ExecutorService executorService = Executors.newCachedThreadPool();
         for (int i = 0; i < 5; i++) {
-            exec.execute(new SimplePriorities(Thread.MIN_PRIORITY,"线程"+i));
+            executorService.execute(new SimplePriorities(Thread.MIN_PRIORITY));
+            executorService.execute(new SimplePriorities(Thread.MAX_PRIORITY));
         }
-        exec.execute(new SimplePriorities(Thread.MAX_PRIORITY,"优先级最大线程"));
-        exec.shutdown();
+        executorService.shutdown();
+
     }
 }
